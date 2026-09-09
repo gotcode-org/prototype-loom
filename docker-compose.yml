@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  loom:
+    build: .
+    container_name: loom-server
+    restart: unless-stopped
+    working_dir: /app/data
+    entrypoint: ["/app/loom", "serve", "--config", "/app/server.yaml"]
+    ports:
+      - "8080:8080"
+      - "443:443" 
+    volumes:
+      - ./server.yaml:/app/server.yaml:ro
+      - loom-cache:/app/data
+      - /home/jovens/.ssh/id_rsa:/home/jovens/.ssh/id_rsa:ro
+      - ./certs:/app/data/certs:ro
+    environment:
+      - TZ=UTC
+
+volumes:
+  loom-cache:
+    description: "Persistent storage for the Loom SQLite edge cache"

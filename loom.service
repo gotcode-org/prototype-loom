@@ -1,0 +1,24 @@
+[Unit]
+Description=Loom Edge Routing Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=jovens
+Group=jovens
+# Replace with the actual path to the cloned repository or installation directory
+WorkingDirectory=/home/jovens/developer/repos/loom
+# Execute the built binary
+ExecStart=/home/jovens/developer/repos/loom/bin/loom
+
+# Security & Isolation
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65536
+NoNewPrivileges=yes
+
+# Make sure the SSH agent socket is available if you are using 'ssh-agent' auth in server.yaml
+# Environment="SSH_AUTH_SOCK=/run/user/1000/keyring/ssh"
+
+[Install]
+WantedBy=multi-user.target

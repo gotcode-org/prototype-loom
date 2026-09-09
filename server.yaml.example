@@ -1,0 +1,106 @@
+# ============================================================================
+# LOOM: SERVER CONFIGURATION
+# ============================================================================
+# This is the master configuration file for the Loom edge router.
+# It defines security limits, engine bounds, and which domains map to which
+# Git repositories.
+# ============================================================================
+
+engine:
+  # The maximum time (in seconds) that the `weave_api` function will wait
+  # for an external JSON API to respond before terminating the connection.
+  # Prevents thread exhaustion if third-party servers hang.
+  api_timeout_seconds: 10
+  
+  # The maximum size (in megabytes) of a JSON payload that `weave_api` will
+  # parse into RAM. Protects against Out-Of-Memory (OOM) crashes.
+  api_max_payload_mb: 5
+
+security:
+  # Sliding window rate limiter. If a single IP address exceeds this many
+  # HTTP requests within 60 seconds, they are throttled with a 429 response.
+  max_requests_per_minute: 150
+  
+  # The maximum number of IP addresses the rate limiter will track in RAM.
+  # If a massive botnet exceeds this limit, the tracker resets to shed load.
+  max_tracked_ips: 25000
+  
+  # Path to the SSH known_hosts file used to verify the identity of remote Git 
+  # servers. Prevents Man-in-the-Middle (MITM) attacks during cloning.
+  # 
+  # IMPORTANT: Loom will instantly crash if this file doesn't exist or is missing the server's signature.
+  # To generate the file on a fresh server or Docker host, run:
+  # $ ssh-keyscan github.com >> /root/.ssh/known_hosts
+  # $ ssh-keyscan ssh.gotcode.org >> /root/.ssh/known_hosts
+  known_hosts_path: "/root/.ssh/known_hosts"
+
+  # Array of allowed HTTP Methods. Since Loom serves Markdown, anything that 
+  # isn't GET or HEAD is instantly dropped to prevent POST/PUT attacks.
+  allowed_methods:
+    - "GET"
+    - "HEAD"
+
+  # Array of blocked User-Agents. If a connection uses one of these strings, 
+  # it is instantly dropped. Great for deflecting automated scanners.
+  blocked_user_agents:
+    - "masscan"
+    - "zgrab"
+    - "nuclei"
+    - "nmap"
+
+  # Array of banned IP addresses or CIDR subnets (e.g., OVHCloud or DigitalOcean blocks).
+  # If a connection originates from these networks, it is instantly dropped.
+  blocked_ips:
+    - "192.168.1.5"
+    - "10.0.0.0/8"
+
+metrics:
+  # Enable the native Prometheus metrics exporter
+  enabled: true
+  path: "/metrics"
+  
+  # Access Control List (ACL) for the metrics endpoint. 
+  # If left empty, ANYONE can view your metrics!
+  allowed_ips:
+    - "127.0.0.1"
+    - "10.0.0.50"
+
+# ============================================================================
+# GIT AUTHENTICATION MAP
+# ============================================================================
+# Map git hostnames to absolute paths of SSH private keys on the host machine.
+# This allows the `weave_git` template function to dynamically clone remote 
+# repositories in-memory without needing per-site configuration.
+git_auth:
+  "github.com": "/root/.ssh/id_rsa_github"
+  "ssh.gotcode.org": "/root/.ssh/id_rsa_gotcode"
+
+# ============================================================================
+# GO VANITY IMPORTS
+# ============================================================================
+# If a user runs `go get gotcode.org/loom`, intercept the request and tell
+# the Go toolchain where the actual repository is located.
+vanity_imports:
+  "/loom": "git https://github.com/gotcode-org/loom"
+
+# ============================================================================
+# SITE ROUTING & HOSTS
+# ============================================================================
+sites:
+  # The domain name as the key
+  "gotcode.org":
+    # The repository to clone into RAM
+    repo: "git@github.com:gotcode-org/gotcode-web.git"
+    
+    # Alternative domains that should serve this exact same site
+    aliases:
+      - "www.gotcode.org"
+      
+    # SSH Auth configuration if the repository is Private
+    auth:
+      type: "ssh"
+      path: "/root/.ssh/id_rsa_github"
+
+  "gotunix.com":
+    # Instantly issue a 302 HTTP Redirect to another domain
+    redirect: "https://gotunix.net"

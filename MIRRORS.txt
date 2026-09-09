@@ -1,0 +1,2 @@
+# Main GitHub Mirror
+git@github.com:/gotcode-org/${REPO_NAME}.git
