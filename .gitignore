@@ -7,3 +7,4 @@
 
 # OS Files
 .DS_Store
+/server.yaml
