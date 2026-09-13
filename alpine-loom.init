@@ -6,6 +6,7 @@ description="Loom Edge Routing Web Server"
 command="/usr/local/bin/loom"
 command_args="serve --config /home/loom/server.yaml"
 command_user="loom:loom"
+directory="/home/loom"
 command_background="yes"
 pidfile="/run/${RC_SVCNAME}.pid"
 
