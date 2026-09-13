@@ -39,12 +39,33 @@ sudo chown root:root /usr/local/bin/loom
 sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/loom
 ```
 
-### 3. Setup Systemd (Debian/Ubuntu)
+### 3. Configuration Setup (/etc/loom vs /home/loom)
+
+By default, the provided service files look for the configuration file at `/home/loom/server.yaml`. 
+
+If you prefer the standard Linux file hierarchy where configuration lives in `/etc`, you can store the master configuration in `/etc/loom` and link it to the home directory:
+
+```bash
+# Create the /etc directory
+sudo mkdir /etc/loom
+sudo cp server.yaml.example /etc/loom/server.yaml
+
+# Set secure permissions (only loom user can read it)
+sudo chown -R loom:loom /etc/loom
+sudo chmod 640 /etc/loom/server.yaml
+
+# Create a symlink in /home/loom for easy access
+sudo ln -s /etc/loom/server.yaml /home/loom/server.yaml
+sudo chown -h loom:loom /home/loom/server.yaml
+```
+*Note: Because we created a symlink, you do not need to modify the `loom.service` or `alpine-loom.init` files! They will seamlessly follow the link from the home directory to `/etc`.*
+
+### 4. Setup Systemd (Debian/Ubuntu)
 1. Copy the unit file: `sudo cp loom.service /etc/systemd/system/loom.service`
 2. Reload daemon: `sudo systemctl daemon-reload`
 3. Enable & Start: `sudo systemctl enable --now loom`
 
-### 4. Setup OpenRC (Alpine Linux)
+### 5. Setup OpenRC (Alpine Linux)
 1. Copy the init script: `sudo cp alpine-loom.init /etc/init.d/loom`
 2. Make it executable: `sudo chmod +x /etc/init.d/loom`
 3. Create log files: `sudo touch /var/log/loom.log /var/log/loom.err && sudo chown loom:loom /var/log/loom.*`
