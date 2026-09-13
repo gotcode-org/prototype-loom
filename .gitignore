@@ -1,0 +1,9 @@
+# Binaries
+/bin/
+/loom
+
+# SSL Certs
+/certs/
+
+# OS Files
+.DS_Store
