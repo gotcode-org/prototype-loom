@@ -7,7 +7,7 @@ all: lint test build
 build:
 	@echo "Building Loom..."
 	@mkdir -p bin
-	go build -o bin/loom cmd/loom/main.go
+	CGO_ENABLED=0 go build -a -installsuffix cgo -o bin/loom cmd/loom/main.go
 
 # Run the Loom server in dev mode
 run:
