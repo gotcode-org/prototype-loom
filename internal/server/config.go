@@ -114,7 +114,12 @@ func LoadConfig(path string) (*Config, error) {
 		cfg.Security.MaxTrackedIPs = 25000
 	}
 	if cfg.Security.KnownHostsPath == "" {
-		cfg.Security.KnownHostsPath = "/root/.ssh/known_hosts"
+		homeDir, err := os.UserHomeDir()
+		if err == nil {
+			cfg.Security.KnownHostsPath = homeDir + "/.ssh/known_hosts"
+		} else {
+			cfg.Security.KnownHostsPath = "/root/.ssh/known_hosts"
+		}
 	}
 	if len(cfg.Security.AllowedMethods) == 0 {
 		// By default, only allow read-only requests. Drops all POST, PUT, DELETE attacks instantly.

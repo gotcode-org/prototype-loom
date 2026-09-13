@@ -122,10 +122,10 @@ If you are running Loom on a fresh server or inside a Docker container, you **mu
 Run this command on your host machine to securely scan and save the signatures:
 ```bash
 # Scan GitHub
-ssh-keyscan github.com >> /root/.ssh/known_hosts
+ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 # Scan GotCode
-ssh-keyscan ssh.gotcode.org >> /root/.ssh/known_hosts
+ssh-keyscan ssh.gotcode.org >> ~/.ssh/known_hosts
 ```
 *Note: If you are running Loom in Docker, ensure your `~/.ssh` directory is mounted into the container via `volumes` in your `docker-compose.yml`!*
 

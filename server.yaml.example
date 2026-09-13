@@ -30,9 +30,9 @@ security:
   # 
   # IMPORTANT: Loom will instantly crash if this file doesn't exist or is missing the server's signature.
   # To generate the file on a fresh server or Docker host, run:
-  # $ ssh-keyscan github.com >> /root/.ssh/known_hosts
-  # $ ssh-keyscan ssh.gotcode.org >> /root/.ssh/known_hosts
-  known_hosts_path: "/root/.ssh/known_hosts"
+  # $ ssh-keyscan github.com >> ~/.ssh/known_hosts
+  # $ ssh-keyscan ssh.gotcode.org >> ~/.ssh/known_hosts
+  known_hosts_path: "~/.ssh/known_hosts"
 
   # Array of allowed HTTP Methods. Since Loom serves Markdown, anything that 
   # isn't GET or HEAD is instantly dropped to prevent POST/PUT attacks.
