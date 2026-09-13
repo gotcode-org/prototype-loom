@@ -1,0 +1,18 @@
+#!/sbin/openrc-run
+
+name="loom"
+description="Loom Edge Routing Web Server"
+
+command="/usr/local/bin/loom"
+command_args="serve --config /home/loom/server.yaml"
+command_user="loom:loom"
+command_background="yes"
+pidfile="/run/${RC_SVCNAME}.pid"
+
+output_log="/var/log/loom.log"
+error_log="/var/log/loom.err"
+
+depend() {
+    need net
+    after firewall
+}

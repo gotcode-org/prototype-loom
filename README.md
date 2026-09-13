@@ -14,6 +14,42 @@ Part of the **[GotCode Collective](https://gotcode.org)**.
 - **Stateless Themes:** HTML layouts and CSS live directly in your Git repository. Loom is completely unopinionated.
 - **Sovereign Security:** Natively supports private SSH repositories with roadmap support for pulling keys directly from the Aegis Secrets Engine.
 
+## Deployment
+
+It is highly recommended to run Loom under a dedicated system user (e.g., `loom`) for security and SSH key isolation.
+
+### 1. Create the Service User
+**For Debian/Ubuntu:**
+```bash
+sudo useradd -r -m -s /bin/bash loom
+```
+**For Alpine Linux:**
+```bash
+sudo addgroup -S loom
+sudo adduser -S -D -h /home/loom -s /bin/ash -G loom loom
+```
+
+### 2. Install the Binary
+Compile the binary and move it to your path, and grant it network capabilities so it can bind to ports 80 and 443 without root:
+```bash
+make build
+sudo cp bin/loom /usr/local/bin/loom
+sudo chown root:root /usr/local/bin/loom
+# Allow non-root users to bind to low ports
+sudo setcap 'cap_net_bind_service=+ep' /usr/local/bin/loom
+```
+
+### 3. Setup Systemd (Debian/Ubuntu)
+1. Copy the unit file: `sudo cp loom.service /etc/systemd/system/loom.service`
+2. Reload daemon: `sudo systemctl daemon-reload`
+3. Enable & Start: `sudo systemctl enable --now loom`
+
+### 4. Setup OpenRC (Alpine Linux)
+1. Copy the init script: `sudo cp alpine-loom.init /etc/init.d/loom`
+2. Make it executable: `sudo chmod +x /etc/init.d/loom`
+3. Create log files: `sudo touch /var/log/loom.log /var/log/loom.err && sudo chown loom:loom /var/log/loom.*`
+4. Enable & Start: `sudo rc-update add loom default && sudo rc-service loom start`
+
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) - see the [LICENSE](LICENSE) file for details.

@@ -4,12 +4,10 @@ After=network.target
 
 [Service]
 Type=simple
-User=jovens
-Group=jovens
-# Replace with the actual path to the cloned repository or installation directory
-WorkingDirectory=/home/jovens/developer/repos/loom
-# Execute the built binary
-ExecStart=/home/jovens/developer/repos/loom/bin/loom
+User=loom
+Group=loom
+WorkingDirectory=/home/loom
+ExecStart=/usr/local/bin/loom serve --config /home/loom/server.yaml
 
 # Security & Isolation
 Restart=on-failure
@@ -17,8 +15,8 @@ RestartSec=5
 LimitNOFILE=65536
 NoNewPrivileges=yes
 
-# Make sure the SSH agent socket is available if you are using 'ssh-agent' auth in server.yaml
-# Environment="SSH_AUTH_SOCK=/run/user/1000/keyring/ssh"
+# Capabilities for binding to ports 80/443 without root
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 [Install]
 WantedBy=multi-user.target
