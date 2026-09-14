@@ -14,7 +14,7 @@ func TestCloneInMemory(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	vfs, err := CloneInMemory(ctx, testURL, "")
+	vfs, err := CloneInMemory(ctx, testURL, "", "")
 	if err != nil {
 		t.Fatalf("Failed to clone repository: %v", err)
 	}
@@ -44,7 +44,7 @@ func TestReadFile_NotFound(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	vfs, err := CloneInMemory(ctx, testURL, "")
+	vfs, err := CloneInMemory(ctx, testURL, "", "")
 	if err != nil {
 		t.Fatalf("Failed to clone repository: %v", err)
 	}
