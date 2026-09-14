@@ -1,7 +1,12 @@
-.PHONY: all build run test test-race lint clean
+.PHONY: all tidy build run test test-race lint clean
 
 # Default target
-all: lint test build
+all: tidy lint test build
+
+# Tidy Go modules
+tidy:
+	@echo "Tidying go.mod..."
+	go mod tidy
 
 # Build the Loom binary
 build:
