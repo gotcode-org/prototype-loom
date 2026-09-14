@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -42,7 +43,7 @@ func TestRouter_VanityImport(t *testing.T) {
 			"/loom": "git https://github.com/gotcode-org/loom",
 		},
 	}
-	router := NewRouter(cfg, nil, nil)
+	router := NewRouter(cfg, nil, slog.Default())
 
 	req := httptest.NewRequest("GET", "https://gotcode.org/loom?go-get=1", nil)
 	rr := httptest.NewRecorder()
@@ -61,7 +62,7 @@ func TestRouter_VanityImport(t *testing.T) {
 
 func TestRouter_SiteNotFound(t *testing.T) {
 	cfg := &Config{Sites: make(map[string]SiteConfig)}
-	router := NewRouter(cfg, nil, nil)
+	router := NewRouter(cfg, nil, slog.Default())
 
 	req := httptest.NewRequest("GET", "https://unknown.com/", nil)
 	rr := httptest.NewRecorder()

@@ -75,6 +75,9 @@ func IsAllowed(r *http.Request, ip string, secCfg *SecurityConfig) bool {
 	// Because Loom only serves static Markdown pages, there is zero reason for anyone 
 	// to send a POST, PUT, or DELETE request. If we don't drop those instantly, hackers
 	// could try to upload massive 10GB files in the request body to crash the server.
+	if secCfg == nil {
+		return true
+	}
 	methodAllowed := false
 	for _, m := range secCfg.AllowedMethods {
 		if r.Method == m {
