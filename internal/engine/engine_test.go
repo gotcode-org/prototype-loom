@@ -14,7 +14,7 @@ author: socks
 This is a **test**.
 `)
 
-	doc, err := ParseMarkdown(raw)
+	doc, err := ParseMarkdown(raw, nil, nil, 0, 0, "")
 	if err != nil {
 		t.Fatalf("ParseMarkdown failed: %v", err)
 	}
